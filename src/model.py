@@ -74,7 +74,7 @@ class Classifier(pl.LightningModule):
             h_0.detach_(), c_0.detach_()
             self.hidden = (h_0, c_0)
         loss = self.loss_function(y_pred, labels)
-        self.train_loss.append(loss)
+        self.train_losses.append(loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
