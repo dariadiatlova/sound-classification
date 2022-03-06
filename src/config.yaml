@@ -1,0 +1,14 @@
+train:
+  input_dim: 344
+  hidden_dim: 256
+  output_dim: 10
+  num_layers: 6
+  device: cpu
+  lr: 1e-3
+wandb:
+  use_wandb: true
+  project: "sound-classification"
+  "entity": "daryoou_sh"
+  "name": "bosch"
+  "notes": ""
+  "local": "false"
