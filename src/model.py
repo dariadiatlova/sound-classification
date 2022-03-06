@@ -131,17 +131,18 @@ def main():
         accuracies = []
         val_losses = []
         log_acc = False
-        for test_folder in range(10):
+        for test_folder in range(1, 10):
             train_loader, test_loader = get_dataloader(test_folder)
-            if test_folder == 10:
+            # print(epoch, test_folder, len(train_loader), len(test_loader))
+            if test_folder == 9:
                 log_acc = True
             model = Classifier(accuracies, val_losses, log_acc=log_acc)
             wandb_logger = WandbLogger(project="sound-classification")
             checkpoint_callback = ModelCheckpoint(filepath=f"checkpoints/{epoch}/test_fold_{test_folder}")
-            trainer = pl.Trainer(logger=wandb_logger, checkpoint_callback=checkpoint_callback)
+            trainer = pl.Trainer(max_epochs=1, logger=wandb_logger, checkpoint_callback=checkpoint_callback)
             trainer.fit(model, train_loader, test_loader)
-            accuracies = Classifier.accuracies
-            val_losses = Classifier.val_losses
+            accuracies = model.accuracies
+            val_losses = model.val_losses
 
 
 if __name__ == "__main__":

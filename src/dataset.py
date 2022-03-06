@@ -50,5 +50,5 @@ def get_dataloader(test_folder_number: int) -> Tuple[DataLoader, DataLoader]:
     return train_dataloader, test_dataloader
 
 
-# dataset = SoundDS(1, test=False)
+# dataset = SoundDS(2, test=True)
 # print(len(dataset))

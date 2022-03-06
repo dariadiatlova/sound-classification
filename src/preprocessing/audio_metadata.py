@@ -1,4 +1,3 @@
-import pandas as pd
 import re
 
 from os import walk
@@ -19,15 +18,13 @@ def _get_directory_data(audio_data_path, folder_names) -> Tuple[List[str], List[
 
     for folder in folder_names:
         for dir_path, _, filenames in walk(f"{audio_data_path}/{folder}"):
-            # list of absolute file paths
-            # files_absolute_path = (f"{dir_path}/" + pd.Series(filenames)).tolist()
-            # file_names.extend(files_absolute_path)
             for filename in filenames:
                 try:
                     pattern = "\-(\d*)-"
                     match = re.search(pattern, filename, re.IGNORECASE)
                     class_name = match.group(1)
                     classes.append(int(class_name))
+                    # append absolute path
                     file_names.append(f"{dir_path}/" + filename)
                 except AttributeError:
                     # pass if file in a directory does not match a pattern, means it is not a wav file.
@@ -44,7 +41,7 @@ def get_audio_data(test_folder_number, audio_data_path=f"{DATA_PATH}",
     :param test: bool, if true returns smaller dataset.
     :return: tuple of 2 lists: with filenames and with classes.
     """
-    folder_names = ["fold" + str(i) for i in range(1, 11)]
+    folder_names = ["fold" + str(i) for i in range(1, 10)]
     test_folder = [folder_names[test_folder_number - 1]]  # list contains 1 folder name
     folder_names.pop(test_folder_number - 1)  # list contains 9 folder names
 
