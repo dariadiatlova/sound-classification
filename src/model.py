@@ -131,9 +131,8 @@ def main(config_path: str = "config.yaml"):
         for test_folder in range(1, 10):
             train_loader, test_loader = get_dataloader(test_folder)
             model = Classifier(accuracies, val_losses, train_losses, train_config)
-            wandb_logger = WandbLogger(project="sound-classification")
             checkpoint_callback = ModelCheckpoint(filepath=f"checkpoints/{epoch}/test_fold_{test_folder}")
-            trainer = pl.Trainer(max_epochs=1, logger=wandb_logger, checkpoint_callback=checkpoint_callback)
+            trainer = pl.Trainer(max_epochs=1, checkpoint_callback=checkpoint_callback)
             trainer.fit(model, train_loader, test_loader)
 
             accuracies = model.accuracies
