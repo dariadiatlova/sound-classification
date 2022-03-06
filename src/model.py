@@ -48,7 +48,7 @@ class Classifier(pl.LightningModule):
                  train_loss: List[Optional[int]], train_config: dict):
         super(Classifier, self).__init__()
         self.accuracies = accuracies
-        self.train_loss = train_loss
+        self.train_losses = train_loss
         self.val_losses = val_losses
 
         self.train_config = train_config
