@@ -52,7 +52,6 @@ class Classifier(pl.LightningModule):
         self.val_losses = val_losses
 
         self.train_config = train_config
-        self.save_hyperparameters()
 
         self.lr = self.train_config["lr"]
         self.model = LSTM(self.train_config["input_dim"], self.train_config["hidden_dim"],
@@ -119,13 +118,14 @@ def main(config_path: str = "config.yaml"):
             train_loader, test_loader = get_dataloader(test_folder)
             model = Classifier(accuracies, val_losses, train_losses, train_config)
             checkpoint_callback = ModelCheckpoint(filepath=f"checkpoints/{epoch}/test_fold_{test_folder}")
-            trainer = pl.Trainer(max_epochs=1, checkpoint_callback=checkpoint_callback)
+            trainer = pl.Trainer(max_epochs=1, logger=False, checkpoint_callback=checkpoint_callback)
             trainer.fit(model, train_loader, test_loader)
 
             accuracies = model.accuracies
             val_losses = model.val_losses
             train_losses = model.train_losses
 
+            # as recommended in common pitfalls section, evaluate model using k-fold evaluation
             if test_folder == 9:
                 wandb.log({"train_loss": np.mean(train_losses),
                            "val_loss": np.mean(val_losses),
