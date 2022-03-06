@@ -8,14 +8,13 @@ import pytorch_lightning as pl
 import wandb
 
 from typing import Optional, List
-from datetime import datetime
 
-from pytorch_lightning.loggers import WandbLogger
 from torchmetrics.functional import accuracy
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 from omegaconf import OmegaConf
 
 from src.dataset import get_dataloader, SoundDS
+from src.wandb_init import _init_wandb
 
 
 class LSTM(nn.Module):
@@ -42,18 +41,6 @@ class LSTM(nn.Module):
 # dataset = SoundDS(1, test=False)
 # pred, hid = lstm(torch.unsqueeze(dataset[0][0], 0))
 # print(pred)
-
-def _init_wandb(wandb_config: dict, train_config: dict):
-    if wandb_config["use_wandb"]:
-        wandb.login()
-        now = datetime.now()
-        date_time = f"{now.hour}:{now.minute}:{now.second}-{now.day}.{now.month}.{now.year}"
-
-        wandb.init(project=wandb_config["project"],
-                   name=f'{wandb_config["name"]}:{date_time}',
-                   notes=wandb_config["notes"],
-                   entity=wandb_config["entity"],
-                   config=train_config)
 
 
 class Classifier(pl.LightningModule):
