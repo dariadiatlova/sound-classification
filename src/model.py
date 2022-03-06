@@ -43,41 +43,36 @@ class LSTM(nn.Module):
 # pred, hid = lstm(torch.unsqueeze(dataset[0][0], 0))
 # print(pred)
 
+def _init_wandb(wandb_config: dict, train_config: dict):
+    if wandb_config["use_wandb"]:
+        wandb.login()
+        now = datetime.now()
+        date_time = f"{now.hour}:{now.minute}:{now.second}-{now.day}.{now.month}.{now.year}"
+
+        wandb.init(project=wandb_config["project"],
+                   name=f'{wandb_config["name"]}:{date_time}',
+                   notes=wandb_config["notes"],
+                   entity=wandb_config["entity"],
+                   config=train_config)
+
 
 class Classifier(pl.LightningModule):
     def __init__(self, accuracies: [List[Optional[int]]], val_losses: [List[Optional[int]]],
-                 config_path: str = "config.yaml", log_acc: bool = False):
+                 train_loss: List[Optional[int]], train_config: dict):
         super(Classifier, self).__init__()
         self.accuracies = accuracies
+        self.train_loss = train_loss
         self.val_losses = val_losses
-        self.log_acc = log_acc
 
-        config = OmegaConf.load(config_path)
-        config = OmegaConf.to_container(config, resolve=True)
-
-        self.train_config = config["train"]
-        self.wandb_config = config["wandb"]
+        self.train_config = train_config
         self.save_hyperparameters()
-        self._init_wandb()
 
         self.lr = self.train_config["lr"]
-        self.model = LSTM(config["train"]["input_dim"], config["train"]["hidden_dim"], config["train"]["output_dim"],
-                          config["train"]["num_layers"])
+        self.model = LSTM(self.train_config["input_dim"], self.train_config["hidden_dim"],
+                          self.train_config["output_dim"], self.train_config["num_layers"])
         self.loss_function = nn.NLLLoss()
         self.stateful = False
         self.hidden = None
-
-    def _init_wandb(self):
-        if self.wandb_config["use_wandb"]:
-            wandb.login()
-            now = datetime.now()
-            date_time = f"{now.hour}:{now.minute}:{now.second}-{now.day}.{now.month}.{now.year}"
-
-            wandb.init(project=self.wandb_config["project"],
-                       name=f'{self.wandb_config["name"]}:{date_time}',
-                       notes=self.wandb_config["notes"],
-                       entity=self.wandb_config["entity"],
-                       config=self.train_config)
 
     def forward(self, x, hidden=None):
         prediction, self.hidden = self.model(x, hidden)
@@ -93,7 +88,7 @@ class Classifier(pl.LightningModule):
             h_0.detach_(), c_0.detach_()
             self.hidden = (h_0, c_0)
         loss = self.loss_function(y_pred, labels)
-        self.log("train_loss", loss, prog_bar=True)
+        self.train_loss.append(loss)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -106,11 +101,6 @@ class Classifier(pl.LightningModule):
 
         self.accuracies.append(acc)
         self.val_losses.append(val_loss)
-
-        if self.log_acc:
-            self.log("val_acc", np.mean(self.accuracies), prog_bar=True)
-            self.log("val_loss", np.mean(self.val_losses), prog_bar=True)
-
         return val_loss
 
     def configure_optimizers(self):
@@ -126,23 +116,34 @@ class Classifier(pl.LightningModule):
         return predictions, loss, acc
 
 
-def main():
-    for epoch in range(5):
-        accuracies = []
-        val_losses = []
-        log_acc = False
+def main(config_path: str = "config.yaml"):
+    config = OmegaConf.load(config_path)
+    config = OmegaConf.to_container(config, resolve=True)
+
+    train_config = config["train"]
+    wandb_config = config["wandb"]
+
+    _init_wandb(wandb_config, train_config)
+
+    for epoch in range(train_config["epochs"]):
+        accuracies, val_losses, train_losses = [], [], []
+
         for test_folder in range(1, 10):
             train_loader, test_loader = get_dataloader(test_folder)
-            # print(epoch, test_folder, len(train_loader), len(test_loader))
-            if test_folder == 9:
-                log_acc = True
-            model = Classifier(accuracies, val_losses, log_acc=log_acc)
+            model = Classifier(accuracies, val_losses, train_losses, train_config)
             wandb_logger = WandbLogger(project="sound-classification")
             checkpoint_callback = ModelCheckpoint(filepath=f"checkpoints/{epoch}/test_fold_{test_folder}")
             trainer = pl.Trainer(max_epochs=1, logger=wandb_logger, checkpoint_callback=checkpoint_callback)
             trainer.fit(model, train_loader, test_loader)
+
             accuracies = model.accuracies
             val_losses = model.val_losses
+            train_losses = model.train_losses
+
+            if test_folder == 9:
+                wandb.log({"train_loss": np.mean(train_losses),
+                           "val_loss": np.mean(val_losses),
+                           "val_acc": np.mean(accuracies)})
 
 
 if __name__ == "__main__":
