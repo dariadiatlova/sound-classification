@@ -21,23 +21,25 @@ class LSTM(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim, num_layers):
         """
             Abstract class for LSTM cells.
-            :param input_dim: int input channels dimension.
-            :param hidden_dim: int dimensionality for hidden layers.
-            :param output_dim: int number of classes.
+            :param input_dim: expected number of features, mel freq_bands, 64.
+            :param hidden_dim: int dimensionality for hidden layers, 256.
+            :param output_dim: int number of classes, 10.
             :param num_layers: int number of lstm layers.
         """
         super(LSTM, self).__init__()
-        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers)
+        # input: [batch_size, mel_freq_bands, time_steps], [16, 64, 344]
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
         self.linear = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x: torch.tensor, hidden: Optional[torch.tensor] = None) -> torch.tensor:
+        x = x.permute(0, 2, 1)
         lstm_out, hidden = self.lstm(x, hidden)
         logits = self.linear(lstm_out[:, -1, :])
         predicted_class_probabilities = F.log_softmax(logits, dim=1)
         return predicted_class_probabilities, hidden
 
 
-# lstm = LSTM(344, 256, 10, 1)
+# lstm = LSTM(64, 256, 10, 1)
 # dataset = SoundDS(1, test=False)
 # pred, hid = lstm(torch.unsqueeze(dataset[0][0], 0))
 # print(pred)
@@ -74,7 +76,7 @@ class Classifier(pl.LightningModule):
             h_0.detach_(), c_0.detach_()
             self.hidden = (h_0, c_0)
         loss = self.loss_function(y_pred, labels)
-        self.train_losses.append(loss)
+        self.train_losses.append(loss.item())
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -86,7 +88,7 @@ class Classifier(pl.LightningModule):
         _, val_loss, acc = self._get_predictions_loss_accuracy(batch)
 
         self.accuracies.append(acc)
-        self.val_losses.append(val_loss)
+        self.val_losses.append(val_loss.item())
         return val_loss
 
     def configure_optimizers(self):
