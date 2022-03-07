@@ -1,3 +1,12 @@
+dataset:
+  num_workers: 4
+  batch_size: 4
+  n_mels: 64
+  n_ffts: 1024
+  sr: 44100
+  duration: 4000
+  n_audio_channels: 1
+
 train:
   epochs: 5
   input_dim: 64
@@ -9,8 +18,10 @@ train:
   seed: 42
   gpu: null
 wandb:
+  log_val_each_n_epoch: 1
+  log_train_loss_each_n_step: 10
   project: "sound-classification"
-  "entity": "daryoou_sh"
-  "name": "bosch"
-  "notes": ""
-  "local": "false"
+  entity: "daryoou_sh"
+  name: "bosch"
+  notes: ""
+  local: "false"

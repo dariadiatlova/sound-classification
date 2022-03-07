@@ -25,8 +25,10 @@ def main(config_path: str = "config.yaml"):
                                    name=f"test_folder_{test_fold}", group=group_name)
         train_loader, val_loader = get_dataloader(test_fold)
         model = Classifier(train_config)
-        trainer = pl.Trainer(max_epochs=train_config["epochs"], logger=wandb_logger, check_val_every_n_epoch=1,
-                             log_every_n_steps=10, gpus=train_config.get("gpu", None))
+        trainer = pl.Trainer(max_epochs=train_config["epochs"], logger=wandb_logger,
+                             check_val_every_n_epoch=wandb_config["log_val_each_n_epoch"],
+                             log_every_n_steps=wandb_config["log_train_loss_each_n_step"],
+                             gpus=train_config.get("gpu", None))
         trainer.fit(model, train_loader, val_loader)
 
 
