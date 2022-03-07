@@ -17,6 +17,7 @@ train:
   lr: 1e-3
   seed: 42
   gpu: null
+
 wandb:
   log_val_each_n_epoch: 1
   log_train_loss_each_n_step: 10
