@@ -1,13 +1,14 @@
 train:
   epochs: 5
   input_dim: 64
-  hidden_dim: 256
+  hidden_dim: 64
   output_dim: 10
-  num_layers: 6
+  num_layers: 1
   device: cpu
   lr: 1e-3
+  seed: 42
+  gpu: null
 wandb:
-  use_wandb: true
   project: "sound-classification"
   "entity": "daryoou_sh"
   "name": "bosch"

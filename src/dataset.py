@@ -20,7 +20,8 @@ class SoundDS(Dataset):
         self.shift_pct: float = 0.4
 
     def __len__(self):
-        return len(self.audio_files)
+        return 100
+        # return len(self.audio_files)
 
     def __getitem__(self, idx):
         audio_file = self.audio_files[idx]
@@ -43,9 +44,9 @@ class SoundDS(Dataset):
 
 
 def get_dataloader(test_folder_number: int) -> Tuple[DataLoader, DataLoader]:
-    train_dataloader = DataLoader(SoundDS(test_folder_number, test=False), batch_size=16, shuffle=True,
+    train_dataloader = DataLoader(SoundDS(test_folder_number, test=False), batch_size=4, shuffle=True,
                                   pin_memory=True, num_workers=1)
-    test_dataloader = DataLoader(SoundDS(test_folder_number, test=True), batch_size=16, shuffle=False,
+    test_dataloader = DataLoader(SoundDS(test_folder_number, test=True), batch_size=4, shuffle=False,
                                  pin_memory=True, num_workers=1)
     return train_dataloader, test_dataloader
 
