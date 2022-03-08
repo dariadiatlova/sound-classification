@@ -60,5 +60,8 @@ def get_dataloader(test_folder_number: int, config_path: str = "config.yaml") ->
     return train_dataloader, test_dataloader
 
 
-# dataset = SoundDS(2, test=True)
+# config = OmegaConf.load("config.yaml")
+# config = OmegaConf.to_container(config, resolve=True)
+# dataset_config = config["dataset"]
+# dataset = SoundDS(9, dataset_config, test=False)
 # print(len(dataset))

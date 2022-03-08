@@ -1,6 +1,6 @@
 dataset:
   num_workers: 4
-  batch_size: 4
+  batch_size: 16
   n_mels: 64
   n_ffts: 1024
   sr: 44100
@@ -10,9 +10,9 @@ dataset:
 train:
   epochs: 5
   input_dim: 64
-  hidden_dim: 64
+  hidden_dim: 256
   output_dim: 10
-  num_layers: 1
+  num_layers: 6
   device: cpu
   lr: 1e-3
   seed: 42
