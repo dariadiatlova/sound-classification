@@ -45,4 +45,4 @@ def _walk(audio_data_path, folder_names, check: bool = True) -> List[str]:
     return corrupted_files
 
 
-_walk(f"{DATA_PATH}", ["fold" + f"{i}" for i in range(10)])
+_walk(f"{DATA_PATH}", ["fold" + f"{i}" for i in range(11)])
