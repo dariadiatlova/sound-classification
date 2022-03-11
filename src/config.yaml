@@ -1,7 +1,7 @@
 dataset:
   num_workers: 4
   batch_size: 16
-  n_mels: 128
+  n_mels: 64
   n_ffts: 1024
   sr: 44100
   duration: 4000
