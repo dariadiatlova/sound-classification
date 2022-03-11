@@ -1,6 +1,10 @@
 import re
+import sys
 import pandas as pd
 import torchaudio
+
+sys.path.append('')
+sys.path.append('../')
 
 from src.data import DATA_PATH
 from os import walk, remove
@@ -45,4 +49,5 @@ def _walk(audio_data_path, folder_names, check: bool = True) -> List[str]:
     return corrupted_files
 
 
-_walk(f"{DATA_PATH}", ["fold" + f"{i}" for i in range(11)])
+if __name__ == "__main__":
+    _walk(f"{DATA_PATH}", ["fold" + f"{i}" for i in range(11)])
