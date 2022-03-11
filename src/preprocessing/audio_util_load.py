@@ -80,7 +80,7 @@ def time_shift(audio_data: Tuple[torch.tensor, int], shift_limit: float) -> Tupl
 
 
 def spectrogram(audio_data: Tuple[torch.tensor, int],
-                n_mels: int = 64, n_fft: int = 1024, hop_len=None) -> torch.tensor:
+                n_mels: int = 128, n_fft: int = 1024, hop_len=None) -> torch.tensor:
     signal, sr = audio_data
     top_db = 80
 

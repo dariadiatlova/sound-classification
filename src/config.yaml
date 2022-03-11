@@ -1,7 +1,7 @@
 dataset:
   num_workers: 4
   batch_size: 16
-  n_mels: 64
+  n_mels: 128
   n_ffts: 1024
   sr: 44100
   duration: 4000
@@ -12,11 +12,12 @@ train:
   input_dim: 64
   hidden_dim: 256
   output_dim: 10
-  num_layers: 6
+  num_layers: 2
   device: cpu
   lr: 1e-3
   seed: 42
   gpu: null
+  dropout: 0.25
 
 wandb:
   log_val_each_n_epoch: 1

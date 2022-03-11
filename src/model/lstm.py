@@ -5,7 +5,7 @@ import torch.nn as nn
 
 
 class LSTM(nn.Module):
-    def __init__(self, input_dim, hidden_dim, output_dim, num_layers):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers, dropout):
         """
             Abstract class for LSTM cells.
             :param input_dim: expected number of features, mel freq_bands, 64.
@@ -15,7 +15,7 @@ class LSTM(nn.Module):
         """
         super(LSTM, self).__init__()
         # input: [batch_size, mel_freq_bands, time_steps], [16, 64, 344]
-        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True)
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=dropout)
         self.linear = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:

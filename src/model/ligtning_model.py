@@ -17,7 +17,8 @@ class Classifier(pl.LightningModule):
 
         self.lr = self.train_config["lr"]
         self.model = LSTM(self.train_config["input_dim"], self.train_config["hidden_dim"],
-                          self.train_config["output_dim"], self.train_config["num_layers"])
+                          self.train_config["output_dim"], self.train_config["num_layers"],
+                          self.train_config["dropout"])
         self.loss_function = nn.CrossEntropyLoss()
 
     def forward(self, x):

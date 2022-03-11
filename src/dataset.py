@@ -39,7 +39,7 @@ class SoundDS(Dataset):
 
         dur_aud = pad_trunc(resamples_channels, self.duration)
         shift_aud = time_shift(dur_aud, self.shift_pct)
-        _spectrogram = spectrogram(shift_aud, n_mels=64, n_fft=1024, hop_len=None)
+        _spectrogram = spectrogram(shift_aud, n_mels=128, n_fft=1024, hop_len=None)
         aug_spectrogram = spectrogram_augment(_spectrogram, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2)
 
         return torch.squeeze(aug_spectrogram), class_id
