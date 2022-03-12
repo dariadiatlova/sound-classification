@@ -92,7 +92,7 @@ def spectrogram(audio_data: Tuple[torch.tensor, int],
     return _spectrogram
 
 
-def spectrogram_augment(spec, max_mask_pct: float = 0.1, n_freq_masks: int = 1, n_time_masks: int = 1) -> torch.tensor:
+def spectrogram_augment(spec, max_mask_pct: float = 0.1, n_freq_masks: int = 2, n_time_masks: int = 2) -> torch.tensor:
     _, n_mels, n_steps = spec.shape
     mask_value = spec.mean()
     augment_spectrogram = spec

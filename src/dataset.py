@@ -19,11 +19,13 @@ class SoundDS(Dataset):
         self.duration: int = dataset_config["duration"]
         self.sr: int = dataset_config["sr"]
         self.channel: int = dataset_config["n_audio_channels"]
-        self.shift_pct: float = 0.4
+        self.shift_pct: float = dataset_config["shift_pct"]
+        self.n_mels: int = dataset_config["n_mels"]
+        self.n_ffts: int = dataset_config["n_ffts"]
 
     def __len__(self):
-        # return 100
-        return len(self.audio_files)
+        return 8
+        # return len(self.audio_files)
 
     def __getitem__(self, idx):
         audio_file = self.audio_files[idx]
@@ -39,8 +41,8 @@ class SoundDS(Dataset):
 
         dur_aud = pad_trunc(resamples_channels, self.duration)
         shift_aud = time_shift(dur_aud, self.shift_pct)
-        _spectrogram = spectrogram(shift_aud, n_mels=64, n_fft=1024, hop_len=None)
-        aug_spectrogram = spectrogram_augment(_spectrogram, max_mask_pct=0.1, n_freq_masks=2, n_time_masks=2)
+        _spectrogram = spectrogram(shift_aud, n_mels=self.n_mels, n_fft=self.n_ffts, hop_len=None)
+        aug_spectrogram = spectrogram_augment(_spectrogram)
 
         return torch.squeeze(aug_spectrogram), class_id
 

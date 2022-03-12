@@ -1,14 +1,16 @@
 dataset:
   num_workers: 4
-  batch_size: 16
+  batch_size: 4
   n_mels: 64
   n_ffts: 1024
+  hop_len: null
   sr: 44100
   duration: 4000
   n_audio_channels: 1
+  shift_pct: 0.4
 
 train:
-  epochs: 5
+  epochs: 1
   input_dim: 64
   hidden_dim: 256
   output_dim: 10
@@ -21,7 +23,7 @@ train:
 
 wandb:
   log_val_each_n_epoch: 1
-  log_train_loss_each_n_step: 10
+  log_train_loss_each_n_step: 1
   project: "sound-classification"
   entity: "daryoou_sh"
   name: "bosch"
