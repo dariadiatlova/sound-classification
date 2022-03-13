@@ -14,7 +14,7 @@ train:
   input_dim: 64
   hidden_dim: 256
   output_dim: 10
-  num_layers: 4
+  num_layers: 2
   device: cpu
   lr: 1e-3
   seed: 42

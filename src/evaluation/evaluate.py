@@ -1,3 +1,4 @@
+import argparse
 import json
 from typing import Dict
 
@@ -7,6 +8,16 @@ from omegaconf import OmegaConf
 from src.model.ligtning_model import Classifier
 from src.preprocessing.audio_util_load import load_wav_file, resample, resample_channel, pad_trunc, time_shift, \
     spectrogram, spectrogram_augment
+
+
+def configure_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('-p', '--audio_file_path',
+                        help='Path to the wav file to evaluate.',
+                        type=str)
+
+    parser.add_argument('-w', '--model_weights_path',
+                        help='Path to the .ckpt file to initialize model weights.',
+                        type=str)
 
 
 def feature_extraction(audio_path: str, dataset_config: Dict):
@@ -42,11 +53,13 @@ def predict_class_for_one_audio(audio_file_path: str,
 
 
 if __name__ == "__main__":
-    raise NotImplementedError("Add Argparser or uncomment and fill arguments bellow!")
-    # test_sample_path = "path/to/the/audio/clip"
-    # model_weights = "/path/to/the/model/weights"
-    # print(predict_class_for_one_audio(test_sample_path,
-    #                                   train_config_path="../config.yaml",
-    #                                   class_names_file_path="classes_names.json",
-    #                                   model_weights_file_path=model_weights)
-    #       )
+    parser = argparse.ArgumentParser()
+    configure_arguments(parser)
+    args = parser.parse_args()
+    test_sample_path = args.audio_file_path
+    model_weights = args.model_weights_path
+    predicted_class = predict_class_for_one_audio(test_sample_path,
+                                                  train_config_path="src/config.yaml",
+                                                  class_names_file_path="src/evaluation/classes_names.json",
+                                                  model_weights_file_path=model_weights)
+    print(f"Predicted class for the audio: {predicted_class}")
