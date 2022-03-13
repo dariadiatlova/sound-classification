@@ -26,6 +26,7 @@ class Classifier(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, labels = batch
+        self.model.train()
         y_pred = self.model(x)
         loss = self.loss_function(y_pred, labels)
         train_accuracy = self._compute_accuracy(labels, y_pred)
@@ -35,6 +36,7 @@ class Classifier(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         x, labels = batch
+        self.model.eval()
         y_pred = self.model(x)
         loss = self.loss_function(y_pred, labels)
         val_accuracy = self._compute_accuracy(labels, y_pred)

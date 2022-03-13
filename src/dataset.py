@@ -24,8 +24,8 @@ class SoundDS(Dataset):
         self.n_ffts: int = dataset_config["n_ffts"]
 
     def __len__(self):
-        return 8
-        # return len(self.audio_files)
+        # return 8
+        return len(self.audio_files)
 
     def __getitem__(self, idx):
         audio_file = self.audio_files[idx]
@@ -47,7 +47,7 @@ class SoundDS(Dataset):
         return torch.squeeze(aug_spectrogram), class_id
 
 
-def get_dataloader(test_folder_number: int, config_path: str = "config.yaml") -> Tuple[DataLoader, DataLoader]:
+def get_dataloader(test_folder_number: int, config_path: str = "src/config.yaml") -> Tuple[DataLoader, DataLoader]:
     config = OmegaConf.load(config_path)
     config = OmegaConf.to_container(config, resolve=True)
 

@@ -1,6 +1,6 @@
 dataset:
   num_workers: 4
-  batch_size: 4
+  batch_size: 512
   n_mels: 64
   n_ffts: 1024
   hop_len: null
@@ -10,11 +10,11 @@ dataset:
   shift_pct: 0.4
 
 train:
-  epochs: 1
+  epochs: 50
   input_dim: 64
   hidden_dim: 256
   output_dim: 10
-  num_layers: 2
+  num_layers: 4
   device: cpu
   lr: 1e-3
   seed: 42
@@ -24,7 +24,7 @@ train:
 wandb:
   log_val_each_n_epoch: 1
   log_train_loss_each_n_step: 1
-  project: "sound-classification"
+  project: "urban-classification"
   entity: "daryoou_sh"
   name: "bosch"
   notes: ""
