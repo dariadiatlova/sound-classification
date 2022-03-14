@@ -11,7 +11,7 @@
 [Weights & biases report](https://wandb.ai/daryoou_sh/sound-classification/reports/UrbanSound-cross-validation--VmlldzoxNjgyMTkz).
 
 ### Training:
-To replicate training process clone this repository, install the [requirements.txt](rrequirements.txt), update [config.yaml](src/config.yaml) and run command from the command line: 
+To replicate training process clone this repository, install the [requirements.txt](requirements.txt), update [config.yaml](src/config.yaml) and run command from the command line: 
 
     python3 -m src.train
     
